@@ -1,542 +1,546 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MeetFlow AI — Live Meeting Recorder, Burmese/Whisper ASR & Auto-PM</title>
+  <title>MeetFlow — Calm Meeting Notes, Transcripts & Personal Tasks</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <!-- Sidebar -->
+  <div class="app-layout">
+    <!-- CALM, MINIMAL SIDEBAR -->
     <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" x2="12" y1="19" y2="22"/>
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/>
+            </svg>
+          </div>
+          <span class="brand-name">MeetFlow</span>
+        </div>
+
+        <button id="btnQuickNewMeeting" class="btn-new-note" title="Start a new meeting note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-        </div>
-        <div>
-          <div class="brand-title">MeetFlow AI</div>
-          <div class="brand-sub">Whisper + မြန်မာ ASR & Auto-PM</div>
-        </div>
+          <span>New Meeting</span>
+        </button>
       </div>
 
-      <button id="btnQuickNewMeeting" class="btn-primary btn-full record-cta">
-        <span class="pulse-dot"></span>
-        <span>New Live Recording</span>
-      </button>
+      <!-- 3 Simple, Clear Primary Spaces -->
+      <nav class="primary-nav">
+        <button class="nav-link active" data-view="workspace">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span>Meeting Notes</span>
+          <span id="navRecBadge" class="live-pill hidden">Recording</span>
+        </button>
 
-      <nav class="nav-menu">
-        <button class="nav-item active" data-view="recorder">
-          <span class="nav-icon">🎙️</span>
-          <span>Live Studio</span>
-          <span id="navRecBadge" class="badge badge-live hidden">REC</span>
+        <button class="nav-link" data-view="tasks">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10l2 2 4-4"/><line x1="9" y1="16" x2="15" y2="16"/>
+          </svg>
+          <span>Action Tasks</span>
+          <span id="navTasksCount" class="count-pill">0</span>
         </button>
-        <button class="nav-item" data-view="pm">
-          <span class="nav-icon">📋</span>
-          <span>Auto-PM Board</span>
-          <span id="navTasksCount" class="badge">0</span>
-        </button>
-        <button class="nav-item" data-view="meetings">
-          <span class="nav-icon">🗂️</span>
-          <span>Meetings & Minutes</span>
-          <span id="navMeetingsCount" class="badge">0</span>
-        </button>
-        <button class="nav-item" data-view="docs">
-          <span class="nav-icon">📄</span>
-          <span>Document Studio</span>
-        </button>
-        <button class="nav-item" data-view="calendar">
-          <span class="nav-icon">📅</span>
-          <span>Google & Teams Cal</span>
-        </button>
-        <button class="nav-item" data-view="settings">
-          <span class="nav-icon">⚙️</span>
-          <span>AI & OAuth Settings</span>
+
+        <button class="nav-link" data-view="schedule">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span>Calendar</span>
         </button>
       </nav>
 
-      <div class="sidebar-footer">
-        <div class="engine-pill">
-          <div class="engine-pill-label">Active ASR Mode</div>
-          <div id="sidebarAsrStatus" class="engine-pill-val">Offline Whisper + မြန်မာ</div>
+      <!-- Recent Meetings List directly in Sidebar for 1-click switching -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>RECENT MEETINGS</span>
         </div>
-        <button id="btnPopoutPip" class="btn-secondary btn-full btn-sm" title="Open floating mini-window over Google Meet or MS Teams">
-          🪟 Floating Companion Mode
+        <div id="sidebarMeetingsList" class="sidebar-meetings-list"></div>
+      </div>
+
+      <!-- Projects Filter -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>PROJECTS</span>
+          <button id="btnNewProjectModal" class="btn-text-icon" title="Add Project">+</button>
+        </div>
+        <div id="sidebarProjectsList" class="sidebar-projects-list"></div>
+      </div>
+
+      <!-- Calm Footer -->
+      <div class="sidebar-bottom">
+        <button class="nav-link" data-view="settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Settings & Connections</span>
+        </button>
+
+        <button id="btnToggleTheme" class="btn-theme-toggle" title="Toggle Light / Dark appearance">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          </svg>
         </button>
       </div>
     </aside>
 
-    <!-- Main Workspace -->
-    <main class="main-area">
-      <!-- Top Header -->
-      <header class="topbar">
-        <div class="topbar-left">
-          <h1 id="viewTitle">Live Meeting Recorder Studio</h1>
-          <span id="viewSubtitle" class="topbar-subtitle">Capture Tab/System Audio + Mic simultaneously with Offline Whisper (EN) & Burmese (မြန်မာ) ASR</span>
-        </div>
-        <div class="topbar-right">
-          <div id="whisperStatusBadge" class="status-chip">
-            <span class="status-dot"></span>
-            <span id="whisperStatusText">Offline Whisper Ready</span>
-          </div>
-          <select id="globalProjectFilter" class="input-select compact">
-            <option value="all">All Projects</option>
-          </select>
-        </div>
-      </header>
+    <!-- MAIN CONTENT STAGE -->
+    <main class="main-stage">
 
-      <!-- VIEW 1: LIVE RECORDER STUDIO -->
-      <section id="view-recorder" class="view-section active">
-        <div class="recorder-grid">
-          <!-- Left column: Audio Capture & Live Transcript -->
-          <div class="card recorder-main-card">
-            <div class="meeting-meta-bar">
-              <input id="recMeetingTitle" type="text" class="input-title" placeholder="Meeting Title (e.g., Client Sync / Sprint Planning)..." value="Weekly Product & Architecture Sync" />
-              <div class="meta-controls">
-                <select id="recProjectSelect" class="input-select"></select>
-                <select id="recPlatformSelect" class="input-select">
-                  <option value="Google Meet">Google Meet (Tab Audio + Mic)</option>
-                  <option value="MS Teams">Microsoft Teams (Tab/App Audio + Mic)</option>
-                  <option value="Zoom">Zoom / Webex</option>
-                  <option value="In-Person / Mic Only">In-Person / Mic Only</option>
+      <!-- ========================================================= -->
+      <!-- SPACE 1: CALM MEETING WORKSPACE (GRANOLA-STYLE NOTEPAD)   -->
+      <!-- ========================================================= -->
+      <section id="view-workspace" class="stage-view active">
+        <div class="document-container">
+          <!-- Upcoming Call Banner (only shown if there is an upcoming meeting) -->
+          <div id="upcomingCallBanner" class="upcoming-banner"></div>
+
+          <!-- Clean Document Header -->
+          <div class="doc-header">
+            <input id="recMeetingTitle" type="text" class="doc-title-input" placeholder="Untitled Meeting..." value="Sprint Architecture & GCP Deployment Sync" />
+
+            <div class="doc-meta-row">
+              <div class="meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span id="meetingDateLabel">Today</span>
+              </div>
+
+              <div class="meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <select id="recProjectSelect" class="meta-select"></select>
+              </div>
+
+              <div class="meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                <select id="recPlatformSelect" class="meta-select">
+                  <option value="Google Meet">Google Meet</option>
+                  <option value="MS Teams">Microsoft Teams</option>
+                  <option value="Zoom">Zoom</option>
+                  <option value="In-Person">In-Person</option>
                 </select>
               </div>
+
+              <button id="btnPopoutPip" class="meta-link-btn" title="Open small floating window while in Meet/Teams">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="9" width="8" height="6" rx="1"/></svg>
+                <span>Float Mini Window</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Calm 3-Tab Switcher inside the Meeting Document -->
+          <div class="doc-tabs-bar">
+            <div class="doc-tabs">
+              <button class="doc-tab active" data-doctab="notes">Notes & Live Transcript</button>
+              <button class="doc-tab" data-doctab="summary">Minutes & Action Items</button>
+              <button class="doc-tab" data-doctab="export">Documents & Export</button>
             </div>
 
-            <!-- ASR Language & Model Selector Bar -->
-            <div class="asr-toolbar">
-              <div class="asr-group">
-                <label class="asr-label">Speech Capture Engine:</label>
-                <select id="recAsrEngine" class="input-select">
-                  <option value="whisper_en">⚡ Offline Whisper Flow (In-Browser English + WebSpeech Live)</option>
-                  <option value="burmese_hybrid">🇲🇲 Burmese (မြန်မာဘာသာ) + English Hybrid ASR (my-MM + Gemini Audio)</option>
-                  <option value="bilingual_auto">🌐 Bilingual Switcher (Instant Toggle EN ↔ မြန်မာ)</option>
-                </select>
-              </div>
-              <div class="asr-group">
-                <button id="btnPreloadWhisper" class="btn-ghost btn-sm" title="Download & warm up offline Whisper model in browser cache">
-                  ⬇️ Warm Up Offline Whisper
-                </button>
-                <button id="btnToggleLangQuick" class="btn-secondary btn-sm">
-                  🗣️ Lang: <strong id="currentLiveLangBadge">EN (English)</strong>
-                </button>
-              </div>
+            <div class="doc-tab-actions">
+              <button id="btnAnalyzeLiveMeeting" class="btn-primary-soft">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Generate Summary & Tasks</span>
+              </button>
+              <button id="btnOpenClaudeBridge" class="btn-secondary-soft" title="Use your Claude Pro web subscription with 1 click">
+                <span>Claude Pro</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 1: NOTES & TRANSCRIPT (Calm, focused writing + collapsible live transcript) -->
+          <div id="docPane-notes" class="doc-pane active">
+            <div class="notes-paper">
+              <textarea id="recLiveNotes" class="clean-notes-editor" placeholder="Jot down key thoughts or decisions here... MeetFlow will combine your notes with the live transcript to generate minutes and tasks."></textarea>
             </div>
 
-            <!-- Audio Visualizer & Capture Controls -->
-            <div class="audio-stage">
-              <div class="visualizer-wrap">
-                <canvas id="audioCanvas" width="600" height="76"></canvas>
-                <div class="audio-meters">
-                  <div class="meter-pill">
-                    <span>🎤 Your Mic</span>
-                    <div class="meter-bar"><div id="micLevelFill" class="meter-fill"></div></div>
-                  </div>
-                  <div class="meter-pill">
-                    <span>💻 Meeting Tab Audio (Meet/Teams)</span>
-                    <div class="meter-bar"><div id="tabLevelFill" class="meter-fill tab-fill"></div></div>
-                  </div>
+            <!-- Clean, Unobtrusive Transcript Section -->
+            <div class="transcript-section">
+              <div class="transcript-bar">
+                <div class="transcript-bar-left">
+                  <span class="section-label">Transcript</span>
+                  <span id="liveInterimStatus" class="interim-status">Ready to record</span>
+                </div>
+                <div class="transcript-bar-right">
+                  <button id="btnAddSimBurmese" class="btn-subtle-xs">+ Sample EN/မြန်မာ</button>
                 </div>
               </div>
 
-              <div class="rec-controls-row">
-                <div class="timer-display" id="recTimer">00:00</div>
-                <div class="rec-buttons">
-                  <button id="btnStartShareAndRecord" class="btn-record">
-                    <span>🔴 Capture Meeting Audio + Mic</span>
-                  </button>
-                  <button id="btnStartMicOnly" class="btn-secondary">
-                    <span>🎤 Record Mic Only</span>
-                  </button>
-                  <button id="btnStopRecording" class="btn-danger hidden">
-                    <span>⏹️ Stop & Summarize</span>
-                  </button>
-                </div>
-              </div>
-              <div class="capture-hint">
-                💡 <strong>Tip for Google Meet / MS Teams:</strong> Click <em>"Capture Meeting Audio + Mic"</em>, select your Meet/Teams browser tab (or Entire Screen), and check <strong>"Also share tab/system audio"</strong> so both you and remote participants are transcribed!
-              </div>
-            </div>
+              <div id="liveTranscriptList" class="clean-transcript-list"></div>
 
-            <!-- Live Transcript Feed -->
-            <div class="transcript-header">
-              <h3>Live Verbatim Transcript</h3>
-              <div class="transcript-actions">
-                <span id="liveInterimStatus" class="interim-pill">Waiting for audio...</span>
-                <button id="btnAddSimBurmese" class="btn-ghost btn-xs" title="Insert a sample bilingual English/Burmese discussion segment to test AI & Auto-PM">+ Test EN/မြန်မာ Segment</button>
+              <div class="quick-utterance-row">
+                <input id="manualSpeakerInput" type="text" class="input-clean speaker-w" value="Ethan" placeholder="Speaker" />
+                <input id="manualUtteranceInput" type="text" class="input-clean flex-1" placeholder="Add a spoken line or timestamped note manually (Press Enter)..." />
+                <button id="btnAddUtterance" class="btn-secondary-soft btn-sm">Add</button>
               </div>
-            </div>
-
-            <div id="liveTranscriptList" class="transcript-feed"></div>
-
-            <!-- Manual Transcript Entry / Quick Correction -->
-            <div class="manual-utterance-bar">
-              <input id="manualSpeakerInput" type="text" class="input-text speaker-input" value="Ethan (You)" placeholder="Speaker" />
-              <input id="manualUtteranceInput" type="text" class="input-text flex-1" placeholder="Type a spoken line or press Enter to append to live transcript (EN or မြန်မာ)..." />
-              <button id="btnAddUtterance" class="btn-secondary btn-sm">Add Line</button>
             </div>
           </div>
 
-          <!-- Right column: Live Scratchpad Notes, Instant AI Minutes & Auto-PM Preview -->
-          <div class="recorder-side-col">
-            <div class="card">
-              <div class="card-header">
-                <h3>📝 Live Meeting Scratchpad</h3>
-                <span class="text-muted text-xs">Included in AI summary & docs</span>
+          <!-- SUB-TAB 2: MINUTES & ACTION ITEMS -->
+          <div id="docPane-summary" class="doc-pane hidden">
+            <div id="liveSummaryPreview" class="clean-summary-sheet"></div>
+          </div>
+
+          <!-- SUB-TAB 3: FORMAL DOCUMENTS & EXPORT -->
+          <div id="docPane-export" class="doc-pane hidden">
+            <div class="export-bar">
+              <div class="template-pills">
+                <button class="tpl-pill active" data-doc-tpl="mom">Meeting Minutes (MOM)</button>
+                <button class="tpl-pill" data-doc-tpl="bilingual">Bilingual (EN + မြန်မာ)</button>
+                <button class="tpl-pill" data-doc-tpl="prd">Product / Tech Spec</button>
+                <button class="tpl-pill" data-doc-tpl="followup">Follow-up Email</button>
+                <button class="tpl-pill" data-doc-tpl="sprint">Sprint Tasks</button>
               </div>
-              <textarea id="recLiveNotes" class="notes-textarea" placeholder="- Jot down key bullet points, numbers, or action items during the call...&#10;- Press 'Analyze & Auto-Create PM Tasks' anytime!"></textarea>
-              <div class="quick-tags-row">
-                <button class="btn-tag" data-insert="- [ACTION] ">+ Action Item</button>
-                <button class="btn-tag" data-insert="- [DECISION] ">+ Decision</button>
-                <button class="btn-tag" data-insert="- [BLOCKER] ">+ Blocker</button>
+
+              <div class="export-actions">
+                <button id="btnCopyDocMd" class="btn-secondary-soft btn-sm">Copy</button>
+                <button id="btnExportWord" class="btn-secondary-soft btn-sm">Word (.doc)</button>
+                <button id="btnExportMd" class="btn-secondary-soft btn-sm">Markdown</button>
+                <button id="btnPrintPdf" class="btn-primary-soft btn-sm">Print / PDF</button>
               </div>
             </div>
 
-            <div class="card ai-live-card">
-              <div class="card-header">
-                <h3>✨ AI Minutes & Auto-PM Extractor</h3>
-                <span class="badge badge-accent">Zero-Burden PM</span>
-              </div>
-              <p class="text-xs text-muted">
-                Summarizes the meeting, extracts decisions, and <strong>automatically adds action items to your Kanban board</strong>.
-              </p>
-              <div class="ai-action-buttons">
-                <button id="btnAnalyzeLiveMeeting" class="btn-primary btn-full">
-                  ⚡ Summarize & Auto-Add Tasks to PM Board
-                </button>
-                <button id="btnOpenClaudeBridge" class="btn-claude btn-full">
-                  🟣 Use My Claude Pro Subscription (1-Click Bridge)
-                </button>
-              </div>
-
-              <div id="liveSummaryPreview" class="live-summary-box">
-                <div class="empty-hint">Click "Summarize & Auto-Add Tasks" during or after your meeting to generate minutes and populate your project board.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW 2: PERSONAL AUTO-PM TOOL (KANBAN + LIST + PROJECTS) -->
-      <section id="view-pm" class="view-section">
-        <div class="pm-toolbar">
-          <div class="pm-tabs">
-            <button class="pm-tab active" data-pmmode="kanban">Kanban Board</button>
-            <button class="pm-tab" data-pmmode="list">Task List</button>
-            <button class="pm-tab" data-pmmode="projects">Projects</button>
-          </div>
-          <div class="pm-actions">
-            <input id="quickTaskTitle" type="text" class="input-text" placeholder="Quick add task (or let meetings add them automatically)..." />
-            <select id="quickTaskPriority" class="input-select compact">
-              <option value="high">🔥 High</option>
-              <option value="medium" selected>⚡ Medium</option>
-              <option value="low">🌱 Low</option>
-            </select>
-            <button id="btnQuickAddTask" class="btn-primary btn-sm">+ Add Task</button>
-            <button id="btnNewProjectModal" class="btn-secondary btn-sm">+ New Project</button>
+            <div id="docRenderedPreview" class="rendered-doc-sheet"></div>
+            <details class="raw-md-toggle">
+              <summary>Edit Raw Markdown</summary>
+              <input id="docTitleInput" type="hidden" value="Meeting Document" />
+              <textarea id="docMarkdownEditor" class="raw-md-textarea"></textarea>
+            </details>
           </div>
         </div>
 
-        <!-- Kanban View -->
-        <div id="pmKanbanView" class="kanban-board">
-          <div class="kanban-col" data-status="todo">
-            <div class="kanban-col-header">
-              <span class="status-pill todo">To Do (From Meetings)</span>
-              <span class="col-count" id="count-todo">0</span>
-            </div>
-            <div class="kanban-cards" id="col-todo"></div>
-          </div>
-
-          <div class="kanban-col" data-status="in_progress">
-            <div class="kanban-col-header">
-              <span class="status-pill in_progress">In Progress</span>
-              <span class="col-count" id="count-in_progress">0</span>
-            </div>
-            <div class="kanban-cards" id="col-in_progress"></div>
-          </div>
-
-          <div class="kanban-col" data-status="blocked">
-            <div class="kanban-col-header">
-              <span class="status-pill blocked">Blocked / Waiting</span>
-              <span class="col-count" id="count-blocked">0</span>
-            </div>
-            <div class="kanban-cards" id="col-blocked"></div>
-          </div>
-
-          <div class="kanban-col" data-status="done">
-            <div class="kanban-col-header">
-              <span class="status-pill done">Completed</span>
-              <span class="col-count" id="count-done">0</span>
-            </div>
-            <div class="kanban-cards" id="col-done"></div>
-          </div>
-        </div>
-
-        <!-- List View -->
-        <div id="pmListView" class="card hidden">
-          <table class="pm-table">
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Task Title</th>
-                <th>Project</th>
-                <th>Priority</th>
-                <th>Due Date</th>
-                <th>Source Meeting</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="pmTableBody"></tbody>
-          </table>
-        </div>
-
-        <!-- Projects View -->
-        <div id="pmProjectsView" class="projects-grid hidden"></div>
-      </section>
-
-      <!-- VIEW 3: MEETINGS & MINUTES ARCHIVE -->
-      <section id="view-meetings" class="view-section">
-        <div class="meetings-layout">
-          <div class="card meetings-list-pane">
-            <div class="card-header">
-              <h3>Recorded Meetings</h3>
-              <span class="text-xs text-muted">Click to inspect</span>
-            </div>
-            <div id="meetingsArchiveList" class="archive-list"></div>
-          </div>
-
-          <div class="card meeting-detail-pane" id="meetingDetailPane">
-            <!-- Populated dynamically -->
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW 4: DOCUMENT GENERATOR STUDIO -->
-      <section id="view-docs" class="view-section">
-        <div class="docs-studio-grid">
-          <div class="card docs-controls-card">
-            <h3>📄 Generate Meeting Documents</h3>
-            <p class="text-xs text-muted">Turn any recorded meeting into formal documentation in 1 click.</p>
-
-            <label class="form-label">Select Source Meeting</label>
-            <select id="docMeetingSelect" class="input-select btn-full"></select>
-
-            <label class="form-label">Document Template</label>
-            <div class="doc-template-list">
-              <label class="doc-radio active">
-                <input type="radio" name="docType" value="mom" checked />
-                <div>
-                  <strong>Formal Minutes of Meeting (MOM)</strong>
-                  <span>Decisions, attendees, discussion log & action table</span>
-                </div>
-              </label>
-              <label class="doc-radio">
-                <input type="radio" name="docType" value="bilingual" />
-                <div>
-                  <strong>Bilingual English + Burmese (မြန်မာ) Executive Report</strong>
-                  <span>Dual-language summary, ဆုံးဖြတ်ချက်များ & တာဝန်များ</span>
-                </div>
-              </label>
-              <label class="doc-radio">
-                <input type="radio" name="docType" value="prd" />
-                <div>
-                  <strong>Product Requirements & Technical Spec (PRD)</strong>
-                  <span>Problem statement, architecture, functional specs & milestones</span>
-                </div>
-              </label>
-              <label class="doc-radio">
-                <input type="radio" name="docType" value="followup" />
-                <div>
-                  <strong>Stakeholder Follow-up Email & Action Plan</strong>
-                  <span>Ready-to-send client or team recap email</span>
-                </div>
-              </label>
-              <label class="doc-radio">
-                <input type="radio" name="docType" value="sprint" />
-                <div>
-                  <strong>Agile Sprint Backlog & User Stories</strong>
-                  <span>Epics, acceptance criteria, and engineering breakdown</span>
-                </div>
-              </label>
-            </div>
-
-            <button id="btnGenerateDocument" class="btn-primary btn-full" style="margin-top:14px;">
-              ✨ Generate Document Now
+        <!-- CALM FLOATING RECORDING DOCK AT THE BOTTOM -->
+        <div class="floating-dock-wrap">
+          <div class="floating-recorder-dock">
+            <!-- Record / Stop Primary Button -->
+            <button id="btnStartShareAndRecord" class="dock-record-btn">
+              <span class="rec-circle"></span>
+              <span>Record Meeting</span>
             </button>
-            <button id="btnClaudeDocPrompt" class="btn-claude btn-full" style="margin-top:8px;">
-              🟣 Copy Document Prompt for Claude Pro
+
+            <button id="btnStartMicOnly" class="dock-secondary-btn" title="Record microphone only without screen/tab audio">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+              <span>Mic Only</span>
             </button>
-          </div>
 
-          <div class="card doc-preview-card">
-            <div class="doc-preview-header">
-              <input id="docTitleInput" type="text" class="input-title" value="Generated Document Preview" />
-              <div class="doc-export-btns">
-                <button id="btnCopyDocMd" class="btn-secondary btn-sm">📋 Copy Text</button>
-                <button id="btnExportWord" class="btn-secondary btn-sm">📘 Download Word (.doc)</button>
-                <button id="btnExportMd" class="btn-secondary btn-sm">⬇️ Download .md</button>
-                <button id="btnPrintPdf" class="btn-primary btn-sm">🖨️ Print / Save PDF</button>
-              </div>
+            <button id="btnStopRecording" class="dock-stop-btn hidden">
+              <span class="stop-square"></span>
+              <span>Stop & Summarize</span>
+            </button>
+
+            <div class="dock-divider"></div>
+
+            <!-- Subtle Timer & Mini Waveform -->
+            <div class="dock-telemetry">
+              <span id="recTimer" class="dock-timer">00:00</span>
+              <canvas id="audioCanvas" width="90" height="24" class="dock-waveform"></canvas>
+              <!-- Hidden meters kept for compatibility -->
+              <div class="hidden"><div id="micLevelFill"></div><div id="tabLevelFill"></div></div>
             </div>
-            <textarea id="docMarkdownEditor" class="doc-editor" placeholder="Select a meeting and click 'Generate Document Now'..."></textarea>
-          </div>
-        </div>
-      </section>
 
-      <!-- VIEW 5: GOOGLE CALENDAR & MICROSOFT TEAMS INTEGRATION -->
-      <section id="view-calendar" class="view-section">
-        <div class="calendar-top-cards">
-          <div class="card cal-connect-card">
-            <div class="cal-provider-head">
-              <span class="cal-badge google">G</span>
-              <div>
-                <h4>Google Calendar & Google Meet</h4>
-                <p class="text-xs text-muted" id="googleConnStatus">OAuth 2.0 + Private ICS supported</p>
-              </div>
-            </div>
-            <div class="cal-btn-row">
-              <button id="btnConnectGoogle" class="btn-primary btn-sm">Connect Google OAuth</button>
-              <button id="btnSyncCalendars" class="btn-secondary btn-sm">🔄 Sync All Events</button>
-            </div>
-          </div>
+            <div class="dock-divider"></div>
 
-          <div class="card cal-connect-card">
-            <div class="cal-provider-head">
-              <span class="cal-badge teams">T</span>
-              <div>
-                <h4>Microsoft Teams & Outlook Calendar</h4>
-                <p class="text-xs text-muted" id="msConnStatus">Microsoft Graph OAuth 2.0 + ICS supported</p>
-              </div>
-            </div>
-            <div class="cal-btn-row">
-              <button id="btnConnectMicrosoft" class="btn-primary btn-sm">Connect Teams OAuth</button>
-              <button id="btnAddScheduleEvent" class="btn-secondary btn-sm">+ Add Meeting Slot</button>
-            </div>
-          </div>
-        </div>
+            <!-- Simple Language & ASR Switcher -->
+            <button id="btnToggleLangQuick" class="dock-lang-btn" title="Click to toggle between English and Burmese (မြန်မာ)">
+              <span id="currentLiveLangBadge">English (EN)</span>
+            </button>
 
-        <div class="card" style="margin-top:16px;">
-          <div class="card-header">
-            <h3>⚡ Instant Calendar ICS Feed Sync (Zero-OAuth Setup Option)</h3>
-            <span class="text-xs text-muted">Paste your private iCal (.ics) URL from Google Calendar or Outlook/Teams</span>
-          </div>
-          <div class="ics-input-row">
-            <input id="icsLabelInput" type="text" class="input-text" style="max-width:200px;" placeholder="Label (e.g. Work Teams)" />
-            <input id="icsUrlInput" type="url" class="input-text flex-1" placeholder="https://calendar.google.com/calendar/ical/.../basic.ics or Outlook ICS URL" />
-            <button id="btnAddIcsFeed" class="btn-secondary btn-sm">+ Add & Sync ICS</button>
-          </div>
-          <div id="icsFeedsList" class="ics-tags-row"></div>
-        </div>
-
-        <div class="card" style="margin-top:16px;">
-          <div class="card-header">
-            <h3>Upcoming Meetings (1-Click Join & Live Record)</h3>
-          </div>
-          <div id="calendarEventsGrid" class="calendar-events-grid"></div>
-        </div>
-      </section>
-
-      <!-- VIEW 6: AI, SPEECH & CLOUD SETTINGS -->
-      <section id="view-settings" class="view-section">
-        <div class="settings-grid">
-          <div class="card">
-            <h3>🧠 Summarization & AI Provider</h3>
-            <p class="text-xs text-muted">Choose how meetings are summarized and how action items are extracted.</p>
-
-            <label class="form-label">Primary AI Mode</label>
-            <select id="setAiProvider" class="input-select btn-full">
-              <option value="claude_bridge">🟣 Claude Pro Subscription Bridge (1-Click Copy/Paste — $0 API Cost)</option>
-              <option value="claude_api">🤖 Anthropic Claude API (Direct Automated API)</option>
-              <option value="gemini_api">✨ Google Gemini 2.5 API (Summarization + Burmese Cloud Audio ASR)</option>
-              <option value="smart_local">⚡ Smart Bilingual Local NLP Engine (100% Offline / Zero Keys)</option>
+            <select id="recAsrEngine" class="dock-engine-select" title="Choose speech recognition mode">
+              <option value="whisper_en">Offline Whisper (EN)</option>
+              <option value="burmese_hybrid">Burmese (မြန်မာ) Hybrid</option>
+              <option value="bilingual_auto">Bilingual Auto</option>
             </select>
 
-            <label class="form-label">Anthropic API Key (Optional if using Claude Pro Web Bridge)</label>
-            <input id="setAnthropicKey" type="password" class="input-text btn-full" placeholder="sk-ant-..." />
+            <button id="btnPreloadWhisper" class="dock-icon-btn" title="Warm up Offline Whisper in browser">
+              <span id="whisperStatusText" class="sr-only">Ready</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
 
-            <label class="form-label">Claude Model</label>
-            <input id="setAnthropicModel" type="text" class="input-text btn-full" value="claude-3-7-sonnet-latest" />
+      <!-- ========================================================= -->
+      <!-- SPACE 2: PERSONAL ACTION & TASK BOARD (CALM & CLEAN)      -->
+      <!-- ========================================================= -->
+      <section id="view-tasks" class="stage-view">
+        <div class="wide-container">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Action Tasks</h1>
+              <p class="page-subtitle">Action items from your meetings appear here automatically. Drag cards or click to complete.</p>
+            </div>
 
-            <label class="form-label">Google Gemini API Key (Used for Cloud Burmese မြန်မာ Audio ASR & Gemini Summaries)</label>
-            <input id="setGeminiKey" type="password" class="input-text btn-full" placeholder="AIzaSy..." />
+            <div class="page-header-controls">
+              <select id="globalProjectFilter" class="select-clean">
+                <option value="all">All Projects</option>
+              </select>
 
-            <label class="form-label checkbox-row">
-              <input id="setAutoAddPm" type="checkbox" checked />
-              <span>Automatically push extracted Action Items into my Personal PM Kanban Board</span>
-            </label>
-
-            <button id="btnSaveAiSettings" class="btn-primary" style="margin-top:14px;">Save AI & Speech Settings</button>
+              <div class="view-pill-group">
+                <button class="view-pill active" data-pmmode="kanban">Board</button>
+                <button class="view-pill" data-pmmode="list">List</button>
+              </div>
+            </div>
           </div>
 
-          <div class="card">
-            <h3>📅 Google & Microsoft Teams OAuth 2.0 Credentials</h3>
-            <p class="text-xs text-muted">Configure your GCP OAuth Client & Azure App Registration for 1-click Calendar OAuth.</p>
+          <!-- Quick Add Task Bar -->
+          <div class="quick-add-card">
+            <input id="quickTaskTitle" type="text" class="quick-add-input" placeholder="+ Add a personal task or follow-up (Press Enter)..." />
+            <select id="quickTaskPriority" class="select-clean compact">
+              <option value="high">High Priority</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <button id="btnQuickAddTask" class="btn-primary-soft btn-sm">Add Task</button>
+          </div>
 
-            <label class="form-label">Google OAuth Client ID</label>
-            <input id="setGoogleClientId" type="text" class="input-text btn-full" placeholder="xxxx.apps.googleusercontent.com" />
+          <!-- Calm 3-Column Board (To Do, In Progress, Done) + Blocked -->
+          <div id="pmKanbanView" class="calm-board">
+            <div class="board-column" data-status="todo">
+              <div class="column-header">
+                <span class="status-dot-sm todo"></span>
+                <span class="column-name">To Do</span>
+                <span class="column-count" id="count-todo">0</span>
+              </div>
+              <div class="column-cards" id="col-todo"></div>
+            </div>
 
-            <label class="form-label">Google OAuth Client Secret</label>
-            <input id="setGoogleClientSecret" type="password" class="input-text btn-full" placeholder="GOCSPX-..." />
+            <div class="board-column" data-status="in_progress">
+              <div class="column-header">
+                <span class="status-dot-sm in_progress"></span>
+                <span class="column-name">In Progress</span>
+                <span class="column-count" id="count-in_progress">0</span>
+              </div>
+              <div class="column-cards" id="col-in_progress"></div>
+            </div>
 
-            <label class="form-label">Google Redirect URI</label>
-            <input id="setGoogleRedirect" type="text" class="input-text btn-full" value="http://localhost:8080/api/calendar/google/callback" />
+            <div class="board-column" data-status="blocked">
+              <div class="column-header">
+                <span class="status-dot-sm blocked"></span>
+                <span class="column-name">Blocked</span>
+                <span class="column-count" id="count-blocked">0</span>
+              </div>
+              <div class="column-cards" id="col-blocked"></div>
+            </div>
 
-            <hr class="divider" />
+            <div class="board-column" data-status="done">
+              <div class="column-header">
+                <span class="status-dot-sm done"></span>
+                <span class="column-name">Completed</span>
+                <span class="column-count" id="count-done">0</span>
+              </div>
+              <div class="column-cards" id="col-done"></div>
+            </div>
+          </div>
 
-            <label class="form-label">Microsoft Entra (Azure AD) Client ID (for Teams Calendar)</label>
-            <input id="setMsClientId" type="text" class="input-text btn-full" placeholder="00000000-0000-0000-0000-000000000000" />
+          <!-- Clean List View -->
+          <div id="pmListView" class="clean-list-card hidden">
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Task</th>
+                  <th>Project</th>
+                  <th>Priority</th>
+                  <th>Due</th>
+                  <th>From Meeting</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="pmTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-            <label class="form-label">Microsoft Client Secret</label>
-            <input id="setMsClientSecret" type="password" class="input-text btn-full" placeholder="Secret value..." />
+      <!-- ========================================================= -->
+      <!-- SPACE 3: CALENDAR & UPCOMING MEETINGS                     -->
+      <!-- ========================================================= -->
+      <section id="view-schedule" class="stage-view">
+        <div class="document-container">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Calendar & Upcoming Calls</h1>
+              <p class="page-subtitle">Connect Google Calendar and Microsoft Teams to join and record with one click.</p>
+            </div>
+            <div class="page-header-controls">
+              <button id="btnSyncCalendars" class="btn-secondary-soft btn-sm">Sync Calendars</button>
+              <button id="btnAddScheduleEvent" class="btn-primary-soft btn-sm">+ Add Meeting</button>
+            </div>
+          </div>
 
-            <label class="form-label">Microsoft Redirect URI</label>
-            <input id="setMsRedirect" type="text" class="input-text btn-full" value="http://localhost:8080/api/calendar/microsoft/callback" />
+          <!-- Simple Connection Cards -->
+          <div class="cal-connections-row">
+            <div class="cal-card">
+              <div class="cal-card-info">
+                <div class="cal-logo google">G</div>
+                <div>
+                  <div class="cal-name">Google Calendar</div>
+                  <div id="googleConnStatus" class="cal-status">Not connected</div>
+                </div>
+              </div>
+              <button id="btnConnectGoogle" class="btn-secondary-soft btn-sm">Connect</button>
+            </div>
 
-            <button id="btnSaveOAuthSettings" class="btn-primary" style="margin-top:14px;">Save Calendar OAuth Config</button>
+            <div class="cal-card">
+              <div class="cal-card-info">
+                <div class="cal-logo teams">T</div>
+                <div>
+                  <div class="cal-name">Microsoft Teams</div>
+                  <div id="msConnStatus" class="cal-status">Not connected</div>
+                </div>
+              </div>
+              <button id="btnConnectMicrosoft" class="btn-secondary-soft btn-sm">Connect</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Events List -->
+          <div class="section-heading">Upcoming Meetings</div>
+          <div id="calendarEventsGrid" class="clean-events-list"></div>
+
+          <!-- Collapsible ICS Feed Option -->
+          <details class="calm-details">
+            <summary>Connect via Private Calendar Link (.ics) — No OAuth setup required</summary>
+            <div class="details-body">
+              <div class="ics-form-row">
+                <input id="icsLabelInput" type="text" class="input-clean" style="width:160px;" placeholder="Label (e.g. Work)" />
+                <input id="icsUrlInput" type="url" class="input-clean flex-1" placeholder="Paste Google or Outlook .ics URL..." />
+                <button id="btnAddIcsFeed" class="btn-secondary-soft btn-sm">Add Link</button>
+              </div>
+              <div id="icsFeedsList" class="ics-chips"></div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- SPACE 4: CALM SETTINGS & CONNECTIONS                      -->
+      <!-- ========================================================= -->
+      <section id="view-settings" class="stage-view">
+        <div class="document-container">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Settings & Connections</h1>
+              <p class="page-subtitle">Configure how MeetFlow transcribes speech, summarizes meetings, and connects to your calendars.</p>
+            </div>
+          </div>
+
+          <div class="settings-stack">
+            <div class="settings-card">
+              <h3 class="settings-card-title">AI & Summarization</h3>
+              <p class="settings-card-desc">You can use your existing Claude Pro web subscription for free, or connect an API key for background automation.</p>
+
+              <label class="field-label">Preferred AI Mode</label>
+              <select id="setAiProvider" class="select-clean btn-full">
+                <option value="claude_bridge">Claude Pro Web Bridge (1-Click Copy/Paste — $0 API Cost)</option>
+                <option value="claude_api">Anthropic Claude API Key</option>
+                <option value="gemini_api">Google Gemini 2.5 API (Summaries + High-Accuracy Burmese Audio ASR)</option>
+                <option value="smart_local">Offline Smart Extractor (No API Key Needed)</option>
+              </select>
+
+              <div class="settings-two-col">
+                <div>
+                  <label class="field-label">Anthropic API Key (Optional)</label>
+                  <input id="setAnthropicKey" type="password" class="input-clean btn-full" placeholder="sk-ant-..." />
+                </div>
+                <div>
+                  <label class="field-label">Claude Model</label>
+                  <input id="setAnthropicModel" type="text" class="input-clean btn-full" value="claude-3-7-sonnet-latest" />
+                </div>
+              </div>
+
+              <label class="field-label">Google Gemini API Key (Optional — Recommended for Burmese မြန်မာ Audio ASR)</label>
+              <input id="setGeminiKey" type="password" class="input-clean btn-full" placeholder="AIzaSy..." />
+
+              <label class="clean-checkbox">
+                <input id="setAutoAddPm" type="checkbox" checked />
+                <span>Automatically add action items from meetings to my Action Tasks board</span>
+              </label>
+
+              <div style="margin-top:16px;">
+                <button id="btnSaveAiSettings" class="btn-primary-soft">Save AI Settings</button>
+              </div>
+            </div>
+
+            <details class="calm-details">
+              <summary>Advanced: Google & Microsoft Teams OAuth 2.0 Credentials</summary>
+              <div class="details-body">
+                <div class="settings-two-col">
+                  <div>
+                    <label class="field-label">Google OAuth Client ID</label>
+                    <input id="setGoogleClientId" type="text" class="input-clean btn-full" />
+                  </div>
+                  <div>
+                    <label class="field-label">Google Client Secret</label>
+                    <input id="setGoogleClientSecret" type="password" class="input-clean btn-full" />
+                  </div>
+                </div>
+                <label class="field-label">Google Redirect URI</label>
+                <input id="setGoogleRedirect" type="text" class="input-clean btn-full" />
+
+                <div class="settings-two-col" style="margin-top:12px;">
+                  <div>
+                    <label class="field-label">Microsoft Client ID</label>
+                    <input id="setMsClientId" type="text" class="input-clean btn-full" />
+                  </div>
+                  <div>
+                    <label class="field-label">Microsoft Client Secret</label>
+                    <input id="setMsClientSecret" type="password" class="input-clean btn-full" />
+                  </div>
+                </div>
+                <label class="field-label">Microsoft Redirect URI</label>
+                <input id="setMsRedirect" type="text" class="input-clean btn-full" />
+
+                <div style="margin-top:14px;">
+                  <button id="btnSaveOAuthSettings" class="btn-secondary-soft">Save OAuth Credentials</button>
+                </div>
+              </div>
+            </details>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- CLAUDE PRO WEB BRIDGE MODAL -->
+  <!-- CLAUDE PRO BRIDGE MODAL -->
   <div id="claudeBridgeModal" class="modal-backdrop hidden">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>🟣 Claude Pro Subscription Bridge (Zero API Cost)</h3>
-        <button id="btnCloseClaudeModal" class="btn-ghost btn-sm">✕</button>
-      </div>
-      <p class="text-xs text-muted">
-        Use your existing <strong>Claude Pro (claude.ai)</strong> account without paying API fees:
-        <br/>1. Click <strong>"Copy Prompt & Open Claude.ai"</strong> below.
-        <br/>2. Paste into Claude Pro and copy the JSON output it gives you.
-        <br/>3. Paste Claude's reply into Box #2 below to auto-populate your Meeting Minutes & Kanban Board!
-      </p>
-
-      <label class="form-label">1. Structured Prompt for Claude Pro (English + မြန်မာ ready)</label>
-      <textarea id="claudePromptBox" class="doc-editor" style="height:130px;" readonly></textarea>
-      <div class="modal-actions-row">
-        <button id="btnCopyAndOpenClaude" class="btn-claude">📋 Copy Prompt & Open claude.ai</button>
-        <button id="btnJustCopyClaudePrompt" class="btn-secondary btn-sm">Copy Prompt Only</button>
+    <div class="clean-modal">
+      <div class="clean-modal-header">
+        <div>
+          <h3>Use Your Claude Pro Subscription</h3>
+          <p class="text-muted text-xs">Summarize this meeting and extract tasks using your claude.ai account ($0 API cost).</p>
+        </div>
+        <button id="btnCloseClaudeModal" class="btn-close">✕</button>
       </div>
 
-      <label class="form-label" style="margin-top:14px;">2. Paste Claude's JSON Response Here to Auto-Import Tasks & Minutes</label>
-      <textarea id="claudeResponseInput" class="doc-editor" style="height:130px;" placeholder='Paste the JSON block returned by Claude Pro here...'></textarea>
-      <div class="modal-actions-row">
-        <button id="btnImportClaudeResponse" class="btn-primary">⚡ Import Minutes & Auto-Create PM Tasks</button>
+      <div class="clean-modal-body">
+        <label class="field-label">Step 1: Copy this prompt & open Claude.ai</label>
+        <textarea id="claudePromptBox" class="clean-textarea" style="height:100px;" readonly></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button id="btnCopyAndOpenClaude" class="btn-primary-soft">Copy Prompt & Open claude.ai</button>
+          <button id="btnJustCopyClaudePrompt" class="btn-secondary-soft btn-sm">Copy Only</button>
+        </div>
+
+        <label class="field-label" style="margin-top:16px;">Step 2: Paste Claude's JSON reply here</label>
+        <textarea id="claudeResponseInput" class="clean-textarea" style="height:100px;" placeholder='Paste the JSON output from Claude here...'></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+          <button id="btnImportClaudeResponse" class="btn-primary-soft">Import Summary & Create Tasks</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toastContainer" class="toast-container"></div>
+  <div id="toastContainer" class="toast-stack"></div>
 
   <script src="/app.js"></script>
 </body>
